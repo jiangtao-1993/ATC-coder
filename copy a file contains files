@@ -1,0 +1,42 @@
+public class Demo {
+    public static void main(String[] args) throws IOException {
+        File f1 = new File("D:/abc");
+        File f2 = new File("D:/888");
+        Copy(f1,f2);
+    }
+
+    private static void Copy(File source,File dest) {
+        //是文件
+        if(source.isFile()){
+            //创建目标路径下的接收文件
+           File lowerDest =new File(dest+ File.separator + source.getName());
+            System.out.println(dest+ File.separator + source.getName());
+            try {
+                lowerDest.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //将文件复制到目标文件里
+            try (FileInputStream fis = new FileInputStream(source);FileOutputStream fos = new FileOutputStream(lowerDest)) {
+                    int len;
+                    byte[] bytes = new byte[1024];
+                    while ((len=fis.read(bytes))!=-1){
+                        fos.write(bytes,0,len);
+                    }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+         //是文件夹
+        }else{
+            File lowerDest =new File(dest+ File.separator + source.getName());
+            lowerDest.mkdirs();
+            File[] listFiles = source.listFiles();
+            for (File file : listFiles) {
+                Copy(file,dest);
+                new File(lowerDest.getAbsolutePath()+File.separator+file.getName()).mkdirs();
+            }
+        }
+    }
+}
